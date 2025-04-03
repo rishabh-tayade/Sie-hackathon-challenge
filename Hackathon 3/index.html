@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Client</title>
+</head>
+<body>
+    <h1>API Client</h1>
+
+    <!-- Section to display all items -->
+    <h2>All Items</h2>
+    <button onclick="getAllItems()">Get All Items</button>
+    <pre id="allItems"></pre>
+
+    <!-- Section to get an item by ID -->
+    <h2>Get Item by ID</h2>
+    <input type="text" id="getItemId" placeholder="Enter Item ID">
+    <button onclick="getItemById()">Get Item</button>
+    <pre id="itemById"></pre>
+
+    <!-- Section to create a new item -->
+    <h2>Create New Item</h2>
+    <input type="text" id="newItemName" placeholder="Name">
+    <input type="text" id="newItemDescription" placeholder="Description">
+    <input type="number" id="newItemPrice" placeholder="Price">
+    <button onclick="createItem()">Create Item</button>
+    <pre id="createdItem"></pre>
+
+    <!-- Section to update an item -->
+    <h2>Update Item</h2>
+    <input type="text" id="updateItemId" placeholder="Enter Item ID">
+    <input type="text" id="updateItemName" placeholder="New Name">
+    <input type="text" id="updateItemDescription" placeholder="New Description">
+    <input type="number" id="updateItemPrice" placeholder="New Price">
+    <button onclick="updateItem()">Update Item</button>
+    <pre id="updatedItem"></pre>
+
+    <!-- Section to delete an item -->
+    <h2>Delete Item</h2>
+    <input type="text" id="deleteItemId" placeholder="Enter Item ID">
+    <button onclick="deleteItem()">Delete Item</button>
+    <pre id="deletedItem"></pre>
+
+    <script>
+        const API_URL = 'http://localhost:3000/api/items';
+
+        // Fetch all items
+        function getAllItems() {
+            fetch(API_URL)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('allItems').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Fetch an item by ID
+        function getItemById() {
+            const id = document.getElementById('getItemId').value;
+            fetch(`${API_URL}/${id}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('itemById').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Create a new item
+        function createItem() {
+            const name = document.getElementById('newItemName').value;
+            const description = document.getElementById('newItemDescription').value;
+            const price = parseFloat(document.getElementById('newItemPrice').value);
+
+            fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, description, price })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('createdItem').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Update an item
+        function updateItem() {
+            const id = document.getElementById('updateItemId').value;
+            const name = document.getElementById('updateItemName').value;
+            const description = document.getElementById('updateItemDescription').value;
+            const price = parseFloat(document.getElementById('updateItemPrice').value);
+
+            fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, description, price })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('updatedItem').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Delete an item
+        function deleteItem() {
+            const id = document.getElementById('deleteItemId').value;
+
+            fetch(`${API_URL}/${id}`, {
+                method: 'DELETE'
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('deletedItem').textContent = JSON.stringify(data, null, 2);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
